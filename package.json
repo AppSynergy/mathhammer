@@ -1,0 +1,22 @@
+{
+  "name": "mathhammer",
+  "version": "1.0.0",
+  "description": "Mathhammer",
+  "main": "index.js",
+  "scripts": {
+    "watch": "npm run w:elm & npm run w:sass",
+    "w:elm": "onchange 'src/**' -- npm run build:elm",
+    "w:sass": "onchange 'sass/**' -- npm run build:sass",
+    "build:elm": "elm make src/Main.elm --output dist/js/main.js",
+    "build:sass": "node-sass --output-style compressed -o dist/css sass"
+  },
+  "author": "Adam Marshall <adam@appsynergy.net>",
+  "license": "ISC",
+  "dependencies": {
+    "elm": "^0.17.1"
+  },
+  "devDependencies": {
+    "node-sass": "^3.11.3",
+    "onchange": "^3.0.2"
+  }
+}
