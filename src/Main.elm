@@ -31,8 +31,11 @@ type alias Model =
 
 init : Model
 init =
-  { statTable = StatTable.init
-  , hitPool = HitPool.init 4 4
+  let
+    stats = StatTable.init
+  in
+  { statTable = stats
+  , hitPool = HitPool.init stats.attacker_n stats.attacker_bs
   }
 
 
@@ -41,12 +44,21 @@ init =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
+
     NoOp ->
       (model, Cmd.none)
+
+    Boot ->
+      ( { model | hitPool = HitPool.update model.statTable model.hitPool
+        }
+      , Cmd.none
+      )
+
     UpdateStat stat value ->
+      let stats = StatTable.update stat value model.statTable in
       ( { model
-        | statTable = StatTable.update stat value model.statTable
-        , hitPool = HitPool.update (stat, value) model.hitPool
+        | statTable = stats
+        , hitPool = HitPool.update stats model.hitPool
         }
       , Cmd.none
       )

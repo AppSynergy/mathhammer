@@ -5,13 +5,15 @@ import Json.Decode as Json
 import Html exposing (Html)
 import Html.Attributes as Attr
 import Html.Events as Event
+import String
 
 import Mathhammer.Model exposing (..)
 
 -- MODEL
 
 type alias Model =
-  { dict : Dict String String
+  { attacker_bs : Int
+  , attacker_n : Int
   }
 
 type Config = StatConf Player StatTag (List Int) Int
@@ -28,23 +30,27 @@ configs =
   ]
 
 
+init : Model
 init =
-  let f x = case x of
-    StatConf player statTag _ default ->
-      (toKey <| Playerstat player statTag, toString default)
-  in
-  { dict = List.map f configs |> Dict.fromList }
+  { attacker_bs = 4
+  , attacker_n = 5
+  }
 
 
 -- UPDATE
 
-toKey x = case x of
-  Playerstat player statTag -> toString player ++ toString statTag
-
 
 update stat value model =
-  { model | dict = Dict.insert (toKey stat) (value) model.dict }
-
+  let
+    --debug = Debug.log "statTable::model" model
+    intVal = case (String.toInt value) of
+      Ok i -> i
+      Err str -> 0
+  in
+  case stat of
+    Playerstat Attacker N -> { model | attacker_n = intVal }
+    Playerstat Attacker BS -> { model | attacker_bs = intVal }
+    _ -> model
 
 -- VIEW
 

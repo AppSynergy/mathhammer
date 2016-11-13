@@ -4,6 +4,7 @@ module Mathhammer.Model exposing (..)
 
 type Msg
   = NoOp
+  | Boot
   | UpdateStat Stat String
 
 type Player
