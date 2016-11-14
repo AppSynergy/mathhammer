@@ -1,4 +1,4 @@
-module Mathhammer.View.StatTable exposing (Model,init,update,view)
+module View.StatTable exposing (Model,init,update,view)
 
 import Dict exposing (Dict)
 import Json.Decode as Json
@@ -7,7 +7,7 @@ import Html.Attributes as Attr
 import Html.Events as Event
 import String
 
-import Mathhammer.Model exposing (..)
+import Model exposing (..)
 
 -- MODEL
 

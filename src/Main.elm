@@ -5,10 +5,10 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 import Html.App
 
-import Mathhammer.Model exposing (..)
-import Mathhammer.Logic.HitPool as HitPool
-import Mathhammer.Logic.WoundPool as WoundPool
-import Mathhammer.View.StatTable as StatTable
+import Model exposing (..)
+import Module.HitPool as HitPool
+import Module.WoundPool as WoundPool
+import View.StatTable as StatTable
 
 
 -- MAIN PROGRAM

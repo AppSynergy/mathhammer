@@ -1,12 +1,12 @@
-module Mathhammer.Logic.WoundPool exposing (Model,init,update,view)
+module Module.WoundPool exposing (Model,init,update,view)
 
 import Dict exposing (Dict)
 import Html exposing (Html)
 import Html.Attributes as Attr
 import String
 
-import Mathhammer.Model exposing (Msg,Chance)
-import Mathhammer.View.ResultsTable as ResultsTable
+import Model exposing (Msg,Chance)
+import View.ResultsTable as ResultsTable
 
 
 -- MODEL

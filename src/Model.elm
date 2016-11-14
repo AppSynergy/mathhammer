@@ -1,4 +1,4 @@
-module Mathhammer.Model exposing (..)
+module Model exposing (..)
 
 -- MODEL
 

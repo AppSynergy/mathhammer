@@ -1,10 +1,10 @@
-module Mathhammer.View.ResultsTable exposing (view)
+module View.ResultsTable exposing (view)
 
 import Html exposing (Html)
 import Html.Attributes as Attr
 import String
 
-import Mathhammer.Model exposing (Msg,Chance)
+import Model exposing (Msg,Chance)
 
 
 -- MODEL

@@ -1,11 +1,12 @@
-module Mathhammer.Logic.HitPool exposing (Model,init,update,view)
+module Module.HitPool exposing (Model,init,update,view)
 
 import Dict exposing (Dict)
 import Html exposing (Html)
 import Html.Attributes as Attr
 
-import Mathhammer.Model exposing (Msg,Chance)
-import Mathhammer.View.ResultsTable as ResultsTable
+import Model exposing (Msg,Chance)
+import View.ResultsTable as ResultsTable
+
 
 -- MODEL
 
