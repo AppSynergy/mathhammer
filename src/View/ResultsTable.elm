@@ -20,11 +20,16 @@ type alias Model a =
 
 view : Model a -> Html Msg
 view model =
-  List.map viewChance model.results
-    |> List.append [viewCheckSum model]
-    |> List.append [Html.canvas [Attr.id model.chartId] []]
-    |> Html.div [Attr.class "well"]
-
+  Html.div [Attr.class "well row"]
+    [ Html.div [Attr.class "col col-xs-6"]
+      [ Html.table [Attr.class "table table-striped"]
+        [ Html.tbody [] <| List.map viewChance model.results
+        ]
+      ]
+    , Html.div [Attr.class "col col-xs-6"]
+      [ Html.canvas [Attr.id model.chartId] []
+      ]
+    ]
 
 viewCheckSum : Model a -> Html Msg
 viewCheckSum model =
@@ -39,7 +44,7 @@ viewChance (val, prob) =
   let
     percent x = (String.left 5 <| toString (x*100)) ++ "%  "
   in
-  Html.li []
-    [ Html.span [] [Html.text <| percent prob]
-    , Html.strong [] [Html.text <| toString val]
+  Html.tr []
+    [ Html.td [] [Html.text <| toString val]
+    , Html.td [] [Html.text <| percent prob]
     ]

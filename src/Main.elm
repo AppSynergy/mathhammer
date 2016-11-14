@@ -26,7 +26,7 @@ main = Html.App.program
 
 -- SUBSCRIPTIONS
 
-port drawChart : (String, Json.Value) -> Cmd msg
+port drawChart : (String, Json.Value, Json.Value) -> Cmd msg
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -67,12 +67,10 @@ update msg model =
         hits =  HitPool.update stats model.hitPool
         wounds = WoundPool.update stats hits.results model.woundPool
       in
-      ( { model
-        | hitPool = hits
-        , woundPool = wounds
-        }
-      , Cmd.none
-      )
+      { model
+      | hitPool = hits
+      , woundPool = wounds
+      } |> update UpdateCharts
 
     UpdateStat stat value ->
       let
@@ -90,17 +88,17 @@ update msg model =
       let
         hits = model.hitPool
         wounds = model.woundPool
-        (_, graph1) = update (DrawChart hits.chartId (Chart.convert hits.results)) model
-        (_, graph2) = update (DrawChart wounds.chartId (Chart.convert wounds.results)) model
+        (_, graph1) = update (Chart.sendData hits) model
+        (_, graph2) = update (Chart.sendData wounds) model
       in
       (model, Cmd.batch [graph1, graph2])
 
     DrawChart id data ->
-      let debug = Debug.log "drawChart" data in
-      (model, drawChart (id, data))
+      (model, drawChart (id, data, Chart.options))
 
     _ ->
       (model, Cmd.none)
+
 
 
 -- VIEW
