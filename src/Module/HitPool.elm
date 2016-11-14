@@ -5,7 +5,7 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 
 import Lib.Dice as Dice
-import Model exposing (Msg,Chance)
+import Model exposing (Msg,Chance,Stat)
 import View.ResultsTable as ResultsTable
 
 
@@ -22,8 +22,8 @@ type alias Model =
 
 type alias HasBSN a =
   { a
-  | attacker_bs : { value : Int }
-  , attacker_n : { value : Int } 
+  | attacker_bs : Stat
+  , attacker_n : Stat
   }
 
 

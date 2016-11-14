@@ -11,14 +11,13 @@ type Msg
   | UpdateCharts
   | UpdateStat String String
 
-type alias Chance = (Int, Float)
-type alias AccumChance = (Int, Float, Float)
+type alias Chance = 
+  (Int, Float)
 
+type alias AccumChance =
+  (Int, Float, Float)
 
-type Player
-  = Attacker | Defender
-
-type StatTag
-  = N | WS | BS | S | T | W | I | A | Ld | AP | Sv
-
-type Stat = Playerstat Player StatTag
+type alias Stat =
+  { value : Int
+  , range : List Int
+  }

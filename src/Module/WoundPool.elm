@@ -7,7 +7,7 @@ import Html.Attributes as Attr
 import List.Extra
 
 import Lib.Dice as Dice
-import Model exposing (Msg,Chance)
+import Model exposing (Msg,Chance,Stat)
 import View.ResultsTable as ResultsTable
 
 -- MODEL
@@ -24,8 +24,8 @@ type alias Model =
 
 type alias HasStTo a =
   { a
-  | attacker_s : { value : Int }
-  , defender_t : { value : Int }
+  | attacker_s : Stat
+  , defender_t : Stat
   }
 
 
