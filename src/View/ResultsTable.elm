@@ -29,6 +29,11 @@ view model =
       , Html.th [] [Html.text "Exact %"]
       , Html.th [] [Html.text "At least %"]
       ]
+    expect : Float
+    expect = Math.expectation model.results
+    expect_str : String
+    expect_str = "Expect: " ++ (toString expect)
+
   in
   Html.div [Attr.class "well row"]
     [ Html.div [Attr.class "col col-xs-6 table-col"]
@@ -39,6 +44,7 @@ view model =
       ]
     , Html.div [Attr.class "col col-xs-6"]
       [ Html.canvas [Attr.id model.chartId] []
+      , Html.h1 [] [Html.text expect_str]
       ]
     ]
 

@@ -2,6 +2,15 @@ module Lib.Math exposing (..)
 
 import Model exposing (..)
 
+
+expectation : List Chance -> Float
+expectation results =
+  0.42
+  --List.map snd results
+  --  |> List.sum
+  --  |> Debug.log "summs"
+
+
 accumulate : List Chance -> List AccumChance
 accumulate results =
   let
@@ -16,7 +25,7 @@ accumulate results =
       x::xs -> p + h x
 
     h : AccumChance -> Float
-    h (a, b, c) = c
+    h (_, _, c) = c
 
   in
   List.foldr f [] results
