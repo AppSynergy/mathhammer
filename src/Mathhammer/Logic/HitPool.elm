@@ -3,20 +3,21 @@ module Mathhammer.Logic.HitPool exposing (Model,init,update,view)
 import Dict exposing (Dict)
 import Html exposing (Html)
 import Html.Attributes as Attr
-import String
 
-import Mathhammer.Model exposing (Msg)
-
+import Mathhammer.Model exposing (Msg,Chance)
+import Mathhammer.View.ResultsTable as ResultsTable
 
 -- MODEL
 
 type alias Model =
   { n: Int
   , bs : Int
-  , results : List Result
+  , results : List Chance
   }
 
-type alias Result = (Int, Float)
+
+type alias HasBSN a =
+  { a | attacker_bs : Int, attacker_n : Int }
 
 
 init : Int -> Int -> Model
@@ -34,22 +35,22 @@ toHitChance =
 
 -- UPDATE
 
-update : { a | attacker_bs : Int, attacker_n : Int } -> Model -> Model
+update : HasBSN a -> Model -> Model
 update stats model =
   let model' =
     { model | n = stats.attacker_n , bs = stats.attacker_bs }
   in
-  { model' | results = updateResults model' }
+  { model' | results = updateChances model' }
 
 
-updateResults : Model -> List Result
-updateResults model =
+updateChances : Model -> List Chance
+updateChances model =
   case Dict.get model.bs toHitChance of
     Just x -> binomial model.n x <| 1 - x
     Nothing -> model.results
 
 
-binomial : Int -> Float -> Float -> List Result
+binomial : Int -> Float -> Float -> List Chance
 binomial n a b =
   let
     f x = let
@@ -75,27 +76,4 @@ nChooseK n k =
 
 view : Model -> Html Msg
 view model =
-  List.map viewResult model.results
-    |> List.append [viewCheckSum model]
-    |> Html.div [Attr.class "well"]
-
-
-viewCheckSum : Model -> Html Msg
-viewCheckSum model =
-  let
-    fsum xs = List.map snd xs |> List.sum
-  in Html.text <| toString <| fsum model.results
-
-
-viewSummary : Model -> Html Msg
-viewSummary model =
-  Html.text <| toString <| List.map (nChooseK model.n) [0..(model.n)]
-
-
-viewResult : Result -> Html Msg
-viewResult (val, prob) =
-  let percent x = (String.left 5 <| toString (x*100)) ++ "%  " in
-  Html.li []
-    [ Html.span [] [Html.text <| percent prob]
-    , Html.strong [] [Html.text <| toString val]
-    ]
+  ResultsTable.view model

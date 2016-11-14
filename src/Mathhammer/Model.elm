@@ -7,6 +7,9 @@ type Msg
   | Boot
   | UpdateStat Stat String
 
+type alias Chance = (Int, Float)
+
+
 type Player
   = Attacker | Defender
 

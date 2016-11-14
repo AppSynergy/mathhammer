@@ -14,6 +14,8 @@ import Mathhammer.Model exposing (..)
 type alias Model =
   { attacker_bs : Int
   , attacker_n : Int
+  , attacker_s : Int
+  , defender_t : Int
   }
 
 type Config = StatConf Player StatTag (List Int) Int
@@ -34,6 +36,8 @@ init : Model
 init =
   { attacker_bs = 4
   , attacker_n = 5
+  , attacker_s = 4
+  , defender_t = 3
   }
 
 
@@ -50,6 +54,8 @@ update stat value model =
   case stat of
     Playerstat Attacker N -> { model | attacker_n = intVal }
     Playerstat Attacker BS -> { model | attacker_bs = intVal }
+    Playerstat Attacker S -> { model | attacker_s = intVal }
+    Playerstat Defender T -> { model | defender_t = intVal }
     _ -> model
 
 -- VIEW

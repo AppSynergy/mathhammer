@@ -7,6 +7,7 @@ import Html.App
 
 import Mathhammer.Model exposing (..)
 import Mathhammer.Logic.HitPool as HitPool
+import Mathhammer.Logic.WoundPool as WoundPool
 import Mathhammer.View.StatTable as StatTable
 
 
@@ -14,7 +15,7 @@ import Mathhammer.View.StatTable as StatTable
 
 main : Program Never
 main = Html.App.program
-    { init = (init, Cmd.none)
+    { init = init
     , view = view
     , update = update
     , subscriptions = (\model -> Sub.none)
@@ -26,17 +27,23 @@ main = Html.App.program
 type alias Model =
   { statTable : StatTable.Model
   , hitPool : HitPool.Model
+  , woundPool : WoundPool.Model
   }
 
 
-init : Model
+init : (Model, Cmd Msg)
 init =
   let
     stats = StatTable.init
+    hits = HitPool.init stats.attacker_n stats.attacker_bs
+    wounds = WoundPool.init stats.attacker_s stats.defender_t hits.results
   in
-  { statTable = stats
-  , hitPool = HitPool.init stats.attacker_n stats.attacker_bs
-  }
+  ( { statTable = stats
+    , hitPool = hits
+    , woundPool = wounds
+    }
+  , Task.perform (\_ -> NoOp) (\_ -> Boot) (Task.succeed "ok")
+  )
 
 
 -- UPDATE
@@ -49,16 +56,28 @@ update msg model =
       (model, Cmd.none)
 
     Boot ->
-      ( { model | hitPool = HitPool.update model.statTable model.hitPool
+      let
+        stats = model.statTable
+        hits =  HitPool.update stats model.hitPool
+        wounds = WoundPool.update stats hits.results model.woundPool
+      in
+      ( { model
+        | hitPool = hits
+        , woundPool = wounds
         }
       , Cmd.none
       )
 
     UpdateStat stat value ->
-      let stats = StatTable.update stat value model.statTable in
+      let
+        stats = StatTable.update stat value model.statTable
+        hits =  HitPool.update stats model.hitPool
+        wounds = WoundPool.update stats hits.results model.woundPool
+      in
       ( { model
         | statTable = stats
-        , hitPool = HitPool.update stats model.hitPool
+        , hitPool = hits
+        , woundPool = wounds
         }
       , Cmd.none
       )
@@ -71,4 +90,5 @@ view model =
   Html.div [Attr.class "container"]
     [ StatTable.view model.statTable
     , HitPool.view model.hitPool
+    , WoundPool.view model.woundPool
     ]
