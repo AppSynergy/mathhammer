@@ -26,12 +26,15 @@ viewCheckSum : Model a -> Html Msg
 viewCheckSum model =
   let
     fsum xs = List.map snd xs |> List.sum
-  in Html.text <| toString <| fsum model.results
+  in
+  Html.text <| toString <| fsum model.results
 
 
 viewChance : Chance -> Html Msg
 viewChance (val, prob) =
-  let percent x = (String.left 5 <| toString (x*100)) ++ "%  " in
+  let
+    percent x = (String.left 5 <| toString (x*100)) ++ "%  "
+  in
   Html.li []
     [ Html.span [] [Html.text <| percent prob]
     , Html.strong [] [Html.text <| toString val]

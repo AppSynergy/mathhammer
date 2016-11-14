@@ -3,11 +3,12 @@ module Module.WoundPool exposing (Model,init,update,view)
 import Dict exposing (Dict)
 import Html exposing (Html)
 import Html.Attributes as Attr
-import String
 
+import List.Extra
+
+import Lib.Dice as Dice
 import Model exposing (Msg,Chance)
 import View.ResultsTable as ResultsTable
-
 
 -- MODEL
 
@@ -28,7 +29,7 @@ init s t input =
   { s = s
   , t = t
   , input = input
-  , results = input
+  , results = []
   }
 
 
@@ -37,16 +38,47 @@ init s t input =
 update : HasStTo a -> List Chance -> Model -> Model
 update stats results model =
   let
-    deb = Debug.log "wp update" model'
     model' =
-      { model | s = stats.attacker_s, t = stats.defender_t, results = results }
+      { model
+      | s = stats.attacker_s
+      , t = stats.defender_t
+      , input = results
+      }
   in
   { model' | results = updateChances model' }
 
 
 updateChances : Model -> List Chance
 updateChances model =
-  model.results
+  let
+    statDiff = model.s - model.t
+  in
+  case Dict.get statDiff Dice.toWoundChance of
+    Just x -> expand x model.input
+    Nothing ->
+      -- Wound on a 2+
+      if statDiff > 2 then expand (5/6) model.input
+      -- Impossible to wound
+      else [(0, 1.0)]
+
+
+expand : Float -> List Chance -> List Chance
+expand toWound input =
+  let
+    calcToWound : Chance -> List Chance
+    calcToWound (a,b) =
+      Dice.binomial a toWound (1 - toWound)
+        |> List.map (\(c,d) -> (c, b * d))
+
+    sumByIndex : List Chance -> Chance
+    sumByIndex xs =
+      List.foldr (\(a,b) (c,d) -> (a, b + d)) (0, 0.0) xs
+  in
+  input
+    |> List.concatMap calcToWound
+    |> List.sort
+    |> List.Extra.groupWhile (\(a,b) (c,d) -> a == c)
+    |> List.map sumByIndex
 
 
 -- VIEW
