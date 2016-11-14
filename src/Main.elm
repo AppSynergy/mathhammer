@@ -46,8 +46,8 @@ init : (Model, Cmd Msg)
 init =
   let
     stats = StatTable.init
-    hits = HitPool.init stats.attacker_n stats.attacker_bs
-    wounds = WoundPool.init stats.attacker_s stats.defender_t hits.results
+    hits = HitPool.init stats.attacker_n.value stats.attacker_bs.value
+    wounds = WoundPool.init stats.attacker_s.value stats.defender_t.value hits.results
   in
   { statTable = stats
   , hitPool = hits

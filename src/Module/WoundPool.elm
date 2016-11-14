@@ -23,7 +23,10 @@ type alias Model =
 
 
 type alias HasStTo a =
-  { a | attacker_s : Int, defender_t : Int }
+  { a
+  | attacker_s : { value : Int }
+  , defender_t : { value : Int }
+  }
 
 
 init : Int -> Int -> List Chance  -> Model
@@ -44,8 +47,8 @@ update stats results model =
   let
     model' =
       { model
-      | s = stats.attacker_s
-      , t = stats.defender_t
+      | s = stats.attacker_s.value
+      , t = stats.defender_t.value
       , input = results
       }
   in

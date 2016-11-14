@@ -32,7 +32,7 @@ options =
 convert : List (Int, Float, Float) -> Json.Value
 convert xs =
   let
-    debug = Debug.log "convert 4 chart:" xs
+    --debug = Debug.log "convert 4 chart:" xs
     labels = List.map (\(a, _, _) -> Json.int a) xs
     data = List.map (\(_, b, _) -> Json.float b) xs
     dataAccum = List.map (\(_, _, c) -> Json.float c) xs

@@ -21,7 +21,10 @@ type alias Model =
 
 
 type alias HasBSN a =
-  { a | attacker_bs : Int, attacker_n : Int }
+  { a
+  | attacker_bs : { value : Int }
+  , attacker_n : { value : Int } 
+  }
 
 
 init : Int -> Int -> Model
@@ -39,7 +42,7 @@ init n bs =
 update : HasBSN a -> Model -> Model
 update stats model =
   let model' =
-    { model | n = stats.attacker_n , bs = stats.attacker_bs }
+    { model | n = stats.attacker_n.value , bs = stats.attacker_bs.value }
   in
   { model' | results = updateChances model' }
 

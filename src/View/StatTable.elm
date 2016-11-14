@@ -12,87 +12,72 @@ import Model exposing (..)
 -- MODEL
 
 type alias Model =
-  { attacker_bs : Int
-  , attacker_n : Int
-  , attacker_s : Int
-  , defender_t : Int
+  { attacker_bs : { value : Int }
+  , attacker_n : { value : Int }
+  , attacker_s : { value : Int }
+  , defender_t : { value : Int }
   }
-
-type Config = StatConf Player StatTag (List Int) Int
-
-configs : List Config
-configs =
-  [ StatConf Attacker N [1..20] 5
-  , StatConf Attacker BS [2..5] 4
-  , StatConf Attacker S [1..10] 4
-  , StatConf Attacker AP [1..6] 5
-  , StatConf Defender N [1..20] 10
-  , StatConf Defender T [2..7] 3
-  , StatConf Defender Sv [2..6] 5
-  ]
 
 
 init : Model
 init =
-  { attacker_bs = 4
-  , attacker_n = 5
-  , attacker_s = 4
-  , defender_t = 3
+  { attacker_bs = { value = 4 }
+  , attacker_n = { value = 4 }
+  , attacker_s = { value = 4 }
+  , defender_t = { value = 4 }
   }
 
 
 -- UPDATE
 
-
 update stat value model =
   let
-    --debug = Debug.log "statTable::model" model
     intVal = case (String.toInt value) of
-      Ok i -> i
-      Err str -> 0
+      Ok i -> { value = i }
+      Err str -> { value = 0 }
   in
   case stat of
-    Playerstat Attacker N -> { model | attacker_n = intVal }
-    Playerstat Attacker BS -> { model | attacker_bs = intVal }
-    Playerstat Attacker S -> { model | attacker_s = intVal }
-    Playerstat Defender T -> { model | defender_t = intVal }
+    "attacker_n" -> { model | attacker_n = intVal }
+    "attacker_bs" -> { model | attacker_bs = intVal }
+    "attacker_s" -> { model | attacker_s = intVal }
+    "defender_t" -> { model | defender_t = intVal }
     _ -> model
+
 
 -- VIEW
 
 view : Model -> Html Msg
 view model =
-  let text = Html.text in
+  let
+    repeatRow ele vals =
+      Html.tr [] <| List.map (\x -> ele [] [x]) vals
+  in
   Html.table [Attr.class "table"]
-  [ throw
-    [ text "No. of Attackers", text "BS"
-    , text "Strength", text "AP"
-    , text "No. of Defenders"
-    , text "Toughness", text "Armor Save"
+    [ (repeatRow Html.th)
+      [ Html.text "No. of Attackers"
+      , Html.text "BS"
+      , Html.text "Strength"
+      , Html.text "AP"
+      , Html.text "No. of Defenders"
+      , Html.text "Toughness"
+      , Html.text "Armor Save"
+      ]
+    , (repeatRow Html.td) <| toTSel model
     ]
-  , tdrow <| List.map toTSel configs
+
+
+toTSel : Model -> List (Html Msg)
+toTSel model =
+  [ viewSelect "attacker_n" [1..20] model.attacker_n.value
+  , viewSelect "attacker_bs" [1..6] model.attacker_bs.value
+  , viewSelect "attacker_s" [1..10] model.attacker_s.value
+  , viewSelect "defender_t" [1..10] model.defender_t.value
   ]
 
 
-toTSel config =
-  case config of
-    StatConf player statTag values default ->
-      viewSelector player statTag values default
-
-
-throw : List (Html Msg) -> Html Msg
-throw vals =
-  Html.tr [] <| List.map (\x -> Html.th [] [x]) vals
-
-
-tdrow vals =
-  Html.tr [] <| List.map (\x -> Html.td [] [x]) vals
-
-
-viewSelector : Player -> StatTag -> List Int -> Int -> Html Msg
-viewSelector player statTag values default =
+viewSelect : String -> List Int -> Int -> Html Msg
+viewSelect label values default =
   let
-    stat = Playerstat player statTag
     opt x =
       Html.option
         [ Attr.value <| toString x
@@ -101,7 +86,7 @@ viewSelector player statTag values default =
         [ Html.text <|toString x ]
   in
   List.map opt values
-    |> Html.select [onChange (\x -> UpdateStat stat x)]
+    |> Html.select [onChange (\x -> UpdateStat label x)]
 
 
 onChange : (String -> Msg) -> Html.Attribute Msg

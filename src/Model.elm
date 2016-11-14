@@ -9,7 +9,7 @@ type Msg
   | Boot
   | DrawChart String Json.Value
   | UpdateCharts
-  | UpdateStat Stat String
+  | UpdateStat String String
 
 type alias Chance = (Int, Float)
 type alias AccumChance = (Int, Float, Float)
