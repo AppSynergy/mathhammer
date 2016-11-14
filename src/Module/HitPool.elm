@@ -42,7 +42,10 @@ init n bs =
 update : HasBSN a -> Model -> Model
 update stats model =
   let model' =
-    { model | n = stats.attacker_n.value , bs = stats.attacker_bs.value }
+    { model
+    | n = stats.attacker_n.value
+    , bs = stats.attacker_bs.value
+    }
   in
   { model' | results = updateChances model' }
 

@@ -7,12 +7,14 @@ expectation : List AccumChance -> Float
 expectation results =
   let
     foo : Float
-    foo = List.sum g
+    foo = List.sum (List.map f results)
     f (_, b, _) = b
-    g : List Float
-    g = (List.map f results)
   in
-  44
+  case List.head results of
+    Just (t, p, c) ->
+      let debug = Debug.log "head" (t, p, c) in
+      p -- TODO wtf
+    Nothing -> 0.42
 
 accumulate : List Chance -> List AccumChance
 accumulate results =
