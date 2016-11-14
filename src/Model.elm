@@ -1,10 +1,14 @@
 module Model exposing (..)
 
+import Json.Encode as Json
+
 -- MODEL
 
 type Msg
   = NoOp
   | Boot
+  | DrawChart String Json.Value
+  | UpdateCharts
   | UpdateStat Stat String
 
 type alias Chance = (Int, Float)

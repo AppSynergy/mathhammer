@@ -17,6 +17,7 @@ type alias Model =
   , t : Int
   , input : List Chance
   , results : List Chance
+  , chartId : String
   }
 
 
@@ -30,6 +31,7 @@ init s t input =
   , t = t
   , input = input
   , results = []
+  , chartId = "toWoundChart"
   }
 
 

@@ -9,9 +9,60 @@
   <body>
     <div id="app"></div>
     <script src="dist/js/main.js"></script>
+    <script src="bower_components/chart.js/dist/Chart.min.js"></script>
     <script>
     var node = document.getElementById('app');
+
+
     var app = Elm.Main.embed(node);
+    app.ports.drawChart.subscribe(function(data) {
+      var ctx = document.getElementById(data[0]).getContext("2d");
+      console.log(data, data[0]);
+      var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ["M", "T", "W", "R", "F", "S", "S"],
+          datasets: [{
+            label: 'apples',
+            data: [12, 19, 3, 17, 28, 24, 7]
+          }, {
+            label: 'oranges',
+            data: [30, 29, 5, 5, 20, 3, 10]
+          }]
+        },
+        options: {}
+      });
+    });
+    /*
+    var scatterChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          datasets: [{
+              label: 'Scatter Dataset',
+              data: [{
+                  x: -10,
+                  y: 0
+              }, {
+                  x: 0,
+                  y: 10
+              }, {
+                  x: 10,
+                  y: 5
+              }]
+          }]
+      },
+      options: {
+          scales: {
+              xAxes: [{
+                  type: 'linear',
+                  position: 'bottom'
+              }]
+          }
+      }
+  });
+  */
+
+
     </script>
   </body>
 </html>

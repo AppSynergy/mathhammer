@@ -1,10 +1,12 @@
-module Main exposing (main)
+port module Main exposing (main)
 
-import Task
+import Json.Decode as Json
 import Html exposing (Html)
 import Html.Attributes as Attr
 import Html.App
+import Task
 
+import Lib.Chart as Chart
 import Model exposing (..)
 import Module.HitPool as HitPool
 import Module.WoundPool as WoundPool
@@ -18,8 +20,17 @@ main = Html.App.program
     { init = init
     , view = view
     , update = update
-    , subscriptions = (\model -> Sub.none)
+    , subscriptions = subscriptions
     }
+
+
+-- SUBSCRIPTIONS
+
+port drawChart : (String, Json.Value) -> Cmd msg
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.batch []
 
 
 -- MODEL
@@ -38,12 +49,10 @@ init =
     hits = HitPool.init stats.attacker_n stats.attacker_bs
     wounds = WoundPool.init stats.attacker_s stats.defender_t hits.results
   in
-  ( { statTable = stats
-    , hitPool = hits
-    , woundPool = wounds
-    }
-  , Task.perform (\_ -> NoOp) (\_ -> Boot) (Task.succeed "ok")
-  )
+  { statTable = stats
+  , hitPool = hits
+  , woundPool = wounds
+  } |> update Boot
 
 
 -- UPDATE
@@ -51,9 +60,6 @@ init =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-
-    NoOp ->
-      (model, Cmd.none)
 
     Boot ->
       let
@@ -74,13 +80,27 @@ update msg model =
         hits =  HitPool.update stats model.hitPool
         wounds = WoundPool.update stats hits.results model.woundPool
       in
-      ( { model
-        | statTable = stats
-        , hitPool = hits
-        , woundPool = wounds
-        }
-      , Cmd.none
-      )
+      { model
+      | statTable = stats
+      , hitPool = hits
+      , woundPool = wounds
+      } |> update UpdateCharts
+
+    UpdateCharts ->
+      let
+        hits = model.hitPool
+        wounds = model.woundPool
+        (_, graph1) = update (DrawChart hits.chartId (Chart.convert hits.results)) model
+        (_, graph2) = update (DrawChart wounds.chartId (Chart.convert wounds.results)) model
+      in
+      (model, Cmd.batch [graph1, graph2])
+
+    DrawChart id data ->
+      let debug = Debug.log "drawChart" data in
+      (model, drawChart (id, data))
+
+    _ ->
+      (model, Cmd.none)
 
 
 -- VIEW

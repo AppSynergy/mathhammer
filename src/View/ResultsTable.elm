@@ -10,7 +10,10 @@ import Model exposing (Msg,Chance)
 -- MODEL
 
 type alias Model a =
-  { a | results : List Chance }
+  { a
+  | results : List Chance
+  , chartId : String
+  }
 
 
 -- VIEW
@@ -19,6 +22,7 @@ view : Model a -> Html Msg
 view model =
   List.map viewChance model.results
     |> List.append [viewCheckSum model]
+    |> List.append [Html.canvas [Attr.id model.chartId] []]
     |> Html.div [Attr.class "well"]
 
 

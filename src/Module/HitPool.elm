@@ -15,6 +15,7 @@ type alias Model =
   { n: Int
   , bs : Int
   , results : List Chance
+  , chartId : String
   }
 
 
@@ -27,6 +28,7 @@ init n bs =
   { n = n
   , bs = bs
   , results = []
+  , chartId = "toHitChart"
   }
 
 
