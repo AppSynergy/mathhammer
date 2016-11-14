@@ -3,13 +3,16 @@ module Lib.Math exposing (..)
 import Model exposing (..)
 
 
-expectation : List Chance -> Float
+expectation : List AccumChance -> Float
 expectation results =
-  0.42
-  --List.map snd results
-  --  |> List.sum
-  --  |> Debug.log "summs"
-
+  let
+    foo : Float
+    foo = List.sum g
+    f (_, b, _) = b
+    g : List Float
+    g = (List.map f results)
+  in
+  44
 
 accumulate : List Chance -> List AccumChance
 accumulate results =

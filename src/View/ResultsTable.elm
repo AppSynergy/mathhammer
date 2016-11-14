@@ -23,16 +23,17 @@ type alias Model a =
 view : Model a -> Html Msg
 view model =
   let
-    rows = List.map viewChance <| Math.accumulate model.results
+    fullResults = Math.accumulate model.results
+    rows = List.map viewChance fullResults
     header =
       [ Html.th [] [Html.text model.name]
       , Html.th [] [Html.text "Exact %"]
       , Html.th [] [Html.text "At least %"]
       ]
     expect : Float
-    expect = Math.expectation model.results
+    expect = Math.expectation fullResults
     expect_str : String
-    expect_str = "Expect: " ++ (toString expect)
+    expect_str = "Expect : " ++ toString expect 
 
   in
   Html.div [Attr.class "well row"]
@@ -44,7 +45,7 @@ view model =
       ]
     , Html.div [Attr.class "col col-xs-6"]
       [ Html.canvas [Attr.id model.chartId] []
-      , Html.h1 [] [Html.text expect_str]
+      , Html.div [] [Html.text expect_str]
       ]
     ]
 
