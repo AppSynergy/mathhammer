@@ -4,6 +4,7 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 import String
 
+import Lib.Math as Math
 import Model exposing (Msg,Chance)
 
 
@@ -20,10 +21,13 @@ type alias Model a =
 
 view : Model a -> Html Msg
 view model =
+  let
+    rows = List.map viewChance <| Math.accumulate model.results
+  in
   Html.div [Attr.class "well row"]
-    [ Html.div [Attr.class "col col-xs-6"]
+    [ Html.div [Attr.class "col col-xs-6 table-col"]
       [ Html.table [Attr.class "table table-striped"]
-        [ Html.tbody [] <| List.map viewChance model.results
+        [ Html.tbody [] rows
         ]
       ]
     , Html.div [Attr.class "col col-xs-6"]
@@ -39,12 +43,15 @@ viewCheckSum model =
   Html.text <| toString <| fsum model.results
 
 
-viewChance : Chance -> Html Msg
-viewChance (val, prob) =
+viewChance : (Int, Float, Float) -> Html Msg
+viewChance (val, prob, accumProb) =
   let
     percent x = (String.left 5 <| toString (x*100)) ++ "%  "
+
+    strongVal = Html.strong [] [Html.text <| toString val]
   in
   Html.tr []
-    [ Html.td [] [Html.text <| toString val]
+    [ Html.td [] [strongVal]
     , Html.td [] [Html.text <| percent prob]
+    , Html.td [] [Html.text <| percent accumProb]
     ]

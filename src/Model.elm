@@ -12,6 +12,7 @@ type Msg
   | UpdateStat Stat String
 
 type alias Chance = (Int, Float)
+type alias AccumChance = (Int, Float, Float)
 
 
 type Player

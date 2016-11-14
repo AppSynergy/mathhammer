@@ -100,7 +100,6 @@ update msg model =
       (model, Cmd.none)
 
 
-
 -- VIEW
 
 view : Model -> Html Msg

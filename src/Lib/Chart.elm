@@ -2,6 +2,7 @@ module Lib.Chart exposing (..)
 
 import Json.Encode as Json
 
+import Lib.Math as Math
 import Model exposing (..)
 
 
@@ -11,7 +12,9 @@ type alias HasChart a =
 
 sendData : HasChart a -> Msg
 sendData pool =
-  (DrawChart pool.chartId (convert pool.results))
+  Math.accumulate pool.results
+    |> convert
+    |> DrawChart pool.chartId
 
 
 options : Json.Value
@@ -26,17 +29,25 @@ options =
     ]
 
 
-convert : List Chance -> Json.Value
+convert : List (Int, Float, Float) -> Json.Value
 convert xs =
   let
-    labels = List.map (\(a, _) -> Json.int a) xs
-    data = List.map (\(_, b) -> Json.float b) xs
+    debug = Debug.log "convert 4 chart:" xs
+    labels = List.map (\(a, _, _) -> Json.int a) xs
+    data = List.map (\(_, b, _) -> Json.float b) xs
+    dataAccum = List.map (\(_, _, c) -> Json.float c) xs
     datasets =
       [ Json.object
-        [ ("label", Json.string "basic")
+        [ ("label", Json.string "Probability")
         , ("data", Json.list data)
         , ("backgroundColor", Json.string "rgba(153,255,51,0.4)")
-      ] ]
+        ]
+      , Json.object
+        [ ("label", Json.string "Accumulated Probability")
+        , ("data", Json.list dataAccum)
+        , ("backgroundColor", Json.string "rgba(73,133,51,0.4)")
+        ]
+      ]
   in
   Json.object
     [ ("labels", Json.list labels)
