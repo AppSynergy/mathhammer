@@ -89,8 +89,10 @@ update msg model =
       let
         hits = model.hitPool
         wounds = model.woundPool
-        (_, graph1) = update (Chart.sendData hits) model
-        (_, graph2) = update (Chart.sendData wounds) model
+        sendData : Chart.HasChart b -> (Model, Cmd Msg)
+        sendData pool = update (Chart.sendData pool) model
+        (_, graph1) = sendData hits
+        (_, graph2) = sendData wounds
       in
       (model, Cmd.batch [graph1, graph2])
 
