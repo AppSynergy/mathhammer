@@ -1,4 +1,4 @@
-module Module.WoundPool exposing (Model,init,update,view)
+module Module.WoundPool exposing (Model,init,update)
 
 import Dict exposing (Dict)
 import Html exposing (Html)
@@ -8,7 +8,6 @@ import List.Extra
 
 import Lib.Dice as Dice
 import Model exposing (Msg,Chance,Stat)
-import View.ResultsTable as ResultsTable
 
 -- MODEL
 
@@ -86,10 +85,3 @@ expand toWound input =
     |> List.sort
     |> List.Extra.groupWhile (\(a,b) (c,d) -> a == c)
     |> List.map sumByIndex
-
-
--- VIEW
-
-view : Model -> Html Msg
-view model =
-  ResultsTable.view model

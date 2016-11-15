@@ -1,4 +1,4 @@
-module Module.HitPool exposing (Model,init,update,view)
+module Module.HitPool exposing (Model,init,update)
 
 import Dict exposing (Dict)
 import Html exposing (Html)
@@ -6,7 +6,6 @@ import Html.Attributes as Attr
 
 import Lib.Dice as Dice
 import Model exposing (Msg,Chance,Stat)
-import View.ResultsTable as ResultsTable
 
 
 -- MODEL
@@ -55,10 +54,3 @@ updateChances model =
   case Dict.get model.bs Dice.toHitChance of
     Just x -> Dice.binomial model.n x (1 - x)
     Nothing -> model.results
-
-
--- VIEW
-
-view : Model -> Html Msg
-view model =
-  ResultsTable.view model

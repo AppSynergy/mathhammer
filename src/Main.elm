@@ -11,6 +11,7 @@ import Model exposing (..)
 import Module.HitPool as HitPool
 import Module.WoundPool as WoundPool
 import View.StatTable as StatTable
+import View.ResultsTable as ResultsTable
 
 
 -- MAIN PROGRAM
@@ -106,6 +107,6 @@ view : Model -> Html Msg
 view model =
   Html.div [Attr.class "container"]
     [ StatTable.view model.statTable
-    , HitPool.view model.hitPool
-    , WoundPool.view model.woundPool
+    , ResultsTable.view model.hitPool
+    , ResultsTable.view model.woundPool
     ]

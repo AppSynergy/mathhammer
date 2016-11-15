@@ -22,11 +22,11 @@ type alias Model =
 init : Model
 init =
   { attacker_bs =
-    { value = 4
+    { value = 1
     , range = [1..5]
     }
   , attacker_n =
-    { value = 10
+    { value = 3
     , range = [1..20]
     }
   , attacker_s =
