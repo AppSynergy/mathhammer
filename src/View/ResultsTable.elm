@@ -31,9 +31,9 @@ view model =
       , Html.th [] [Html.text "At least %"]
       ]
     expect : Float
-    expect = Math.expectation fullResults
+    expect = Math.expectation model.results
     expect_str : String
-    expect_str = "Expect : " ++ toString expect 
+    expect_str = "Expect : " ++ toString expect
 
   in
   Html.div [Attr.class "well row"]
