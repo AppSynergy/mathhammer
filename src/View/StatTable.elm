@@ -1,4 +1,4 @@
-module View.StatTable exposing (Model,init,update,view)
+module View.StatTable exposing (Model,fetch,init,update,view)
 
 import Json.Decode as Json
 import Html exposing (Html)
@@ -7,6 +7,10 @@ import Html.Events as Event
 import String
 
 import Model exposing (Stat, Msg)
+
+update2 : (a -> b) -> (b -> a -> a) -> (b -> b) -> a -> a
+update2 get set f x = set (f (get x)) x
+
 
 -- MODEL
 
@@ -19,6 +23,20 @@ type alias Model =
   , defender_t : Stat
   , defender_sv : Stat
   }
+
+
+fetch : Model -> (Int, Int, Int, Int, Int, Int, Int)
+fetch stats =
+  let
+    n = stats.attacker_n.value
+    bs = stats.attacker_bs.value
+    s = stats.attacker_s.value
+    ap = stats.attacker_ap.value
+    n2 = stats.defender_n.value
+    t = stats.defender_t.value
+    sv = stats.defender_sv.value
+  in
+  (n, bs, s, ap, n2, t, sv)
 
 
 init : Model
@@ -56,43 +74,29 @@ init =
 
 -- UPDATE
 
-update stat value model =
-  let
-    intVal s = case (String.toInt value) of
-      Ok i -> { s | value = i }
-      Err str -> { s | value = 0 }
-  in
+update : String -> String -> Model -> Model
+update stat v model =
   case stat of
-    "attacker_n" -> { model | attacker_n = intVal model.attacker_n }
-    "attacker_bs" -> { model | attacker_bs = intVal model.attacker_bs }
-    "attacker_s" -> { model | attacker_s = intVal model.attacker_s }
-    "attacker_ap" -> { model | attacker_ap = intVal model.attacker_ap }
-    "defender_n" -> { model | defender_n = intVal model.defender_n }
-    "defender_t" -> { model | defender_t = intVal model.defender_t }
-    "defender_sv" -> { model | defender_sv = intVal model.defender_sv }
+    "attacker_n" -> { model | attacker_n = intVal v model.attacker_n }
+    "attacker_bs" -> { model | attacker_bs = intVal v model.attacker_bs }
+    "attacker_s" -> { model | attacker_s = intVal v model.attacker_s }
+    "attacker_ap" -> { model | attacker_ap = intVal v model.attacker_ap }
+    "defender_n" -> { model | defender_n = intVal v model.defender_n }
+    "defender_t" -> { model | defender_t = intVal v model.defender_t }
+    "defender_sv" -> { model | defender_sv = intVal v model.defender_sv }
     _ -> model
 
 
--- VIEW
-
-view : Model -> Html Msg
-view model =
-  let
-    repeatRow ele vals =
-      Html.tr [] <| List.map (\x -> ele [] [x]) vals
-  in
-  Html.table [Attr.class "table"]
-    [ (repeatRow Html.th)
-      [ Html.text "No. of Attackers"
-      , Html.text "BS"
-      , Html.text "Strength"
-      , Html.text "AP"
-      , Html.text "No. of Defenders"
-      , Html.text "Toughness"
-      , Html.text "Armor Save"
-      ]
-    , (repeatRow Html.td) <| viewControls model
-    ]
+viewHeaders : List (Html Msg)
+viewHeaders =
+  [ Html.text "No. of Attackers"
+  , Html.text "BS"
+  , Html.text "Strength"
+  , Html.text "AP"
+  , Html.text "No. of Defenders"
+  , Html.text "Toughness"
+  , Html.text "Armor Save"
+  ]
 
 
 viewControls : Model -> List (Html Msg)
@@ -105,6 +109,29 @@ viewControls model =
   , viewSelect "defender_t" model.defender_t.range model.defender_t.value
   , viewSelect "defender_sv" model.defender_sv.range model.defender_sv.value
   ]
+
+
+-- SENSIBLE LAND
+
+intVal : String -> Stat -> Stat
+intVal value stat =
+  case (String.toInt value) of
+  Ok i -> { stat | value = i }
+  Err str -> stat
+
+
+-- VIEW
+
+view : Model -> Html Msg
+view model =
+  let
+    repeatRow ele vals =
+      Html.tr [] <| List.map (\x -> ele [] [x]) vals
+  in
+  Html.table [Attr.class "table"]
+    [ viewHeaders |> repeatRow Html.th
+    , viewControls model |> repeatRow Html.td
+    ]
 
 
 viewSelect : String -> List Int -> Int -> Html Msg
