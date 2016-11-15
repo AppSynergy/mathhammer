@@ -20,18 +20,19 @@
 
       var id = data[0];
       var canvas = document.getElementById(id);
-      var ctx = canvas.getContext("2d");
+      if (canvas) {
+        var ctx = canvas.getContext("2d");
 
-      if (exists = chart[id]) {
-        exists.destroy();
+        if (exists = chart[id]) {
+          exists.destroy();
+        }
+
+        chart[id] = new Chart(ctx, {
+          type: 'bar',
+          data: data[1],
+          options: data[2],
+        });
       }
-
-      chart[id] = new Chart(ctx, {
-        type: 'bar',
-        data: data[1],
-        options: data[2],
-      });
-
     });
 
     </script>

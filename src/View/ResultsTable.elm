@@ -33,7 +33,7 @@ view model =
     expect : Float
     expect = Math.expectation model.results
     expect_str : String
-    expect_str = "Expect : " ++ toString expect
+    expect_str = "Expect : " ++ (String.left 4 <| toString expect)
 
   in
   Html.div [Attr.class "well row"]

@@ -4,6 +4,7 @@
   "description": "Mathhammer",
   "main": "index.js",
   "scripts": {
+    "ssce": "onchange src/Stub.elm -- elm make src/Stub.elm --output stub.html",
     "watch": "npm run w:elm & npm run w:sass",
     "w:elm": "onchange 'src/**' -- npm run build:elm",
     "w:sass": "onchange 'sass/**' -- npm run build:sass",
