@@ -14,15 +14,8 @@ type alias Model = Dice.Pool
   }
 
 
-type alias HasApSv a =
-  { a
-  | attacker_ap : Stat
-  , defender_sv : Stat
-  }
-
-
-init : Int -> Int -> List Chance -> Model
-init ap sv input =
+init : (Int, Int) -> List Chance -> Model
+init (ap, sv) input =
   { ap = ap
   , sv = sv
   , input = input
@@ -34,16 +27,10 @@ init ap sv input =
 
 -- UPDATE
 
-update : HasApSv a -> List Chance -> Model -> Model
-update stats results model =
+update : (Int, Int) -> List Chance -> Model -> Model
+update (ap, sv) results model =
   let
-    debug = Debug.log "update" model'
-    model' =
-      { model
-      | ap = stats.attacker_ap.value
-      , sv = stats.defender_sv.value
-      , input = results
-      }
+    model' = { model | ap = ap , sv = sv , input = results }
   in
   { model' | results = updateChances model' }
 
@@ -51,6 +38,7 @@ update stats results model =
 updateChances : Model -> List Chance
 updateChances model =
   if model.ap <= model.sv
+    -- Save negated
     then model.input
     else case Dict.get model.sv Dice.toFailSaveChance of
       Just x -> Dice.expand x model.input

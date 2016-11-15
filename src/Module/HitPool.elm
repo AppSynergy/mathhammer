@@ -14,15 +14,8 @@ type alias Model = Dice.Pool
   }
 
 
-type alias HasBSN a =
-  { a
-  | attacker_bs : Stat
-  , attacker_n : Stat
-  }
-
-
-init : Int -> Int -> Model
-init n bs =
+init : (Int, Int) -> Model
+init (n, bs) =
   { n = n
   , bs = bs
   , input = []
@@ -34,13 +27,10 @@ init n bs =
 
 -- UPDATE
 
-update : HasBSN a -> Model -> Model
-update stats model =
-  let model' =
-    { model
-    | n = stats.attacker_n.value
-    , bs = stats.attacker_bs.value
-    }
+update : (Int, Int) -> Model -> Model
+update (n, bs) model =
+  let
+    model' = { model | n = n , bs = bs }
   in
   { model' | results = updateChances model' }
 

@@ -48,10 +48,16 @@ type alias Model =
 init : (Model, Cmd Msg)
 init =
   let
+    n = stats.attacker_n.value
+    bs = stats.attacker_bs.value
+    s = stats.attacker_s.value
+    ap = stats.attacker_ap.value
+    t = stats.defender_t.value
+    sv = stats.defender_sv.value
     stats = StatTable.init
-    hits = HitPool.init stats.attacker_n.value stats.attacker_bs.value
-    wounds = WoundPool.init stats.attacker_s.value stats.defender_t.value hits.results
-    saves = SavePool.init stats.attacker_ap.value stats.defender_sv.value wounds.results
+    hits = HitPool.init (n, bs)
+    wounds = WoundPool.init (s, t) hits.results
+    saves = SavePool.init (ap, sv) wounds.results
   in
   { statTable = stats
   , hitPool = hits
@@ -108,9 +114,15 @@ calculatePools : Model -> (HitPool.Model, WoundPool.Model, SavePool.Model)
 calculatePools model =
   let
     stats = model.statTable
-    hits =  HitPool.update stats model.hitPool
-    wounds = WoundPool.update stats hits.results model.woundPool
-    saves = SavePool.update stats wounds.results model.savePool
+    n = stats.attacker_n.value
+    bs = stats.attacker_bs.value
+    s = stats.attacker_s.value
+    ap = stats.attacker_ap.value
+    t = stats.defender_t.value
+    sv = stats.defender_sv.value
+    hits =  HitPool.update (n, bs) model.hitPool
+    wounds = WoundPool.update (s, t) hits.results model.woundPool
+    saves = SavePool.update (ap,sv) wounds.results model.savePool
   in
   (hits, wounds, saves)
 
