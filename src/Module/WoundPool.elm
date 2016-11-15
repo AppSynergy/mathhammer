@@ -1,9 +1,6 @@
 module Module.WoundPool exposing (Model,init,update)
 
 import Dict exposing (Dict)
-import Html exposing (Html)
-import Html.Attributes as Attr
-
 import List.Extra
 
 import Lib.Dice as Dice

@@ -1,8 +1,6 @@
 module Module.HitPool exposing (Model,init,update)
 
 import Dict exposing (Dict)
-import Html exposing (Html)
-import Html.Attributes as Attr
 
 import Lib.Dice as Dice
 import Model exposing (Msg,Chance,Stat)

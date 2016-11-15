@@ -15,18 +15,20 @@ type alias Model =
   , attacker_n : Stat
   , attacker_s : Stat
   , attacker_ap : Stat
+  , defender_n : Stat
   , defender_t : Stat
+  , defender_sv : Stat
   }
 
 
 init : Model
 init =
   { attacker_bs =
-    { value = 1
+    { value = 4
     , range = [1..5]
     }
   , attacker_n =
-    { value = 3
+    { value = 5
     , range = [1..20]
     }
   , attacker_s =
@@ -37,9 +39,17 @@ init =
     { value = 5
     , range = [1..6]
     }
+  , defender_n =
+    { value = 5
+    , range = [1..20]
+    }
   , defender_t =
     { value = 3
     , range = [1..10]
+    }
+  , defender_sv =
+    { value = 5
+    , range = [1..6]
     }
   }
 
@@ -89,7 +99,9 @@ viewControls model =
   , viewSelect "attacker_bs" model.attacker_bs.range model.attacker_bs.value
   , viewSelect "attacker_s" model.attacker_s.range model.attacker_s.value
   , viewSelect "attacker_ap" model.attacker_ap.range model.attacker_ap.value
+  , viewSelect "defender_n" model.defender_n.range model.defender_n.value
   , viewSelect "defender_t" model.defender_t.range model.defender_t.value
+  , viewSelect "defender_sv" model.defender_sv.range model.defender_sv.value
   ]
 
 
