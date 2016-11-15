@@ -11,6 +11,16 @@ expectation results =
   List.sum (List.map f results)
 
 
+nonZeroEffect : List Chance -> Float
+nonZeroEffect results =
+  let
+    x = List.filter (\(a, b) -> a == 0) results
+  in
+  case List.head x of
+    Just (a, b) -> (1.0 - b)
+    Nothing -> 0.0
+
+
 accumulate : List Chance -> List AccumChance
 accumulate results =
   let

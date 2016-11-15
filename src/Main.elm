@@ -83,9 +83,16 @@ view : Model -> Html Msg
 view model =
   Html.div [Attr.class "container"]
     [ StatTable.view model.statTable
-    , ResultsTable.view model.hitPool
-    , ResultsTable.view model.woundPool
-    , ResultsTable.view model.savePool
+    , Html.div [Attr.class "nice-results row"]
+      [ ResultsTable.view model.hitPool
+      , ResultsTable.view model.woundPool
+      , ResultsTable.view model.savePool
+      ]
+    , Html.div [Attr.class "table-results"]
+      [ ResultsTable.viewTable model.hitPool
+      , ResultsTable.viewTable model.woundPool
+      , ResultsTable.viewTable model.savePool
+      ]
     ]
 
 

@@ -22,6 +22,7 @@ init (n, bs) =
   , results = []
   , chartId = "toHitChart"
   , name = "Hits"
+  , plural = "hits"
   }
 
 

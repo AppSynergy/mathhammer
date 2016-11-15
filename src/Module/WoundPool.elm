@@ -22,6 +22,7 @@ init (s, t) input =
   , results = []
   , chartId = "toWoundChart"
   , name = "Wounds"
+  , plural = "wounds"
   }
 
 

@@ -21,7 +21,8 @@ init (ap, sv) input =
   , input = input
   , results = []
   , chartId = "toSaveChart"
-  , name = "Armor Saves"
+  , name = "Failed Armor Saves"
+  , plural = "failed saves"
   }
 
 

@@ -8,9 +8,6 @@ import String
 
 import Model exposing (Stat, Msg)
 
-update2 : (a -> b) -> (b -> a -> a) -> (b -> b) -> a -> a
-update2 get set f x = set (f (get x)) x
-
 
 -- MODEL
 
@@ -87,25 +84,35 @@ update stat v model =
     _ -> model
 
 
-viewHeaders : List (Html Msg)
-viewHeaders =
-  [ Html.text "No. of Attackers"
+viewAttackerHeaders : List (Html Msg)
+viewAttackerHeaders =
+  [ Html.text "Number"
   , Html.text "BS"
-  , Html.text "Strength"
+  , Html.text "S"
   , Html.text "AP"
-  , Html.text "No. of Defenders"
-  , Html.text "Toughness"
-  , Html.text "Armor Save"
   ]
 
 
-viewControls : Model -> List (Html Msg)
-viewControls model =
+viewDefenderHeaders : List (Html Msg)
+viewDefenderHeaders =
+  [ Html.text "Number"
+  , Html.text "T"
+  , Html.text "Save"
+  ]
+
+
+viewAttackerInput : Model -> List (Html Msg)
+viewAttackerInput model =
   [ viewSelect "attacker_n" model.attacker_n.range model.attacker_n.value
   , viewSelect "attacker_bs" model.attacker_bs.range model.attacker_bs.value
   , viewSelect "attacker_s" model.attacker_s.range model.attacker_s.value
   , viewSelect "attacker_ap" model.attacker_ap.range model.attacker_ap.value
-  , viewSelect "defender_n" model.defender_n.range model.defender_n.value
+  ]
+
+
+viewDefenderInput : Model -> List (Html Msg)
+viewDefenderInput model =
+  [ viewSelect "defender_n" model.defender_n.range model.defender_n.value
   , viewSelect "defender_t" model.defender_t.range model.defender_t.value
   , viewSelect "defender_sv" model.defender_sv.range model.defender_sv.value
   ]
@@ -128,9 +135,25 @@ view model =
     repeatRow ele vals =
       Html.tr [] <| List.map (\x -> ele [] [x]) vals
   in
-  Html.table [Attr.class "table"]
-    [ viewHeaders |> repeatRow Html.th
-    , viewControls model |> repeatRow Html.td
+  Html.div [Attr.class "input-row row"]
+    [ Html.div [Attr.class "col col-xs-6"]
+      [ Html.h2 [] [Html.text "Attacker"]
+      , Html.table [Attr.class "table stat-table"]
+        [ Html.tbody []
+          [ viewAttackerHeaders |> repeatRow Html.th
+          , viewAttackerInput model |> repeatRow Html.td
+          ]
+        ]
+      ]
+    , Html.div [Attr.class "col col-xs-6"]
+      [ Html.h2 [] [Html.text "Defender"]
+      , Html.table [Attr.class "table stat-table"]
+        [ Html.tbody []
+          [ viewDefenderHeaders |> repeatRow Html.th
+          , viewDefenderInput model |> repeatRow Html.td
+          ]
+        ]
+      ]
     ]
 
 

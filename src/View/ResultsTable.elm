@@ -1,54 +1,49 @@
-module View.ResultsTable exposing (view)
+module View.ResultsTable exposing (view, viewTable)
 
 import Html exposing (Html)
 import Html.Attributes as Attr
 import String
 
+import Lib.Dice as Dice
 import Lib.Math as Math
 import Model exposing (Msg,Chance,AccumChance)
 
 
--- MODEL
-
-type alias Model a =
-  { a
-  | results : List Chance
-  , name : String
-  , chartId : String
-  }
-
-
 -- VIEW
 
-view : Model a -> Html Msg
+view : Dice.Pool a -> Html Msg
 view model =
+  Html.div [Attr.class "col col-xs-12 col-md-6 col-lg-4"]
+    [ Html.div [Attr.class "results-row row"]
+      [ Html.div [Attr.class "col col-xs-6 table-col"]
+        [ Html.h2 [] [Html.text model.name]
+        , Html.div [Attr.class "details"]
+          [ Html.div [] [viewExpectation model]
+          , Html.div [] [viewNonZeroEffect model]
+          ]
+        ]
+      , Html.div [Attr.class "col col-xs-6"]
+        [ Html.div [Attr.class "canvas-holder"]
+          [ Html.canvas [Attr.id model.chartId] [] ]
+        ]
+      ]
+    ]
+
+
+viewTable : Dice.Pool a -> Html Msg
+viewTable model =
   let
     fullResults = Math.accumulate model.results
     rows = List.map viewChance fullResults
     header =
-      [ Html.th [] [Html.text model.name]
-      , Html.th [] [Html.text "Exact %"]
-      , Html.th [] [Html.text "At least %"]
+      [ Html.th [] [Html.text "N"]
+      , Html.th [] [Html.text ("Exactly N " ++ model.plural)]
+      , Html.th [] [Html.text ("At least N " ++ model.plural)]
       ]
-    expect : Float
-    expect = Math.expectation model.results
-    expect_str : String
-    expect_str = "Expect : " ++ (String.left 4 <| toString expect)
-
   in
-  Html.div [Attr.class "well row"]
-    [ Html.div [Attr.class "col col-xs-6 table-col"]
-      [ Html.table [Attr.class "table table-striped"]
-        [ Html.thead [] header
-        , Html.tbody [] rows
-        ]
-      ]
-    , Html.div [Attr.class "col col-xs-6"]
-      [ Html.div []
-        [ Html.canvas [Attr.id model.chartId] []
-        ]
-      , Html.div [] [Html.text expect_str]
-      ]
+  Html.table [Attr.class "table table-striped"]
+    [ Html.thead [] header
+    , Html.tbody [] rows
     ]
 
 
@@ -64,12 +59,49 @@ viewChance (val, prob, accumProb) =
     ]
 
 
+viewExpectation : Dice.Pool a -> Html Msg
+viewExpectation model =
+  let
+    (str, str') = ("Expecting " , " " ++ model.plural ++ ".")
+  in
+  Math.expectation model.results
+    |> viewNumTrunc
+    >> viewHighlight
+    >> (\x -> Html.p [] [Html.text str, x, Html.text str'])
+
+
+viewNonZeroEffect : Dice.Pool a -> Html Msg
+viewNonZeroEffect model =
+  let
+    str = " chance of one or more " ++ model.plural ++ "."
+  in
+  Math.nonZeroEffect model.results
+    |> (*) 100
+    >> viewNumTrunc
+    >> (\x -> x ++ "%" )
+    >> viewHighlight
+    >> (\x -> Html.p [] [x, Html.text str])
+
+
 viewPercent : Float -> String
 viewPercent x =
-  (String.left 4 <| toString (x * 100)) ++ "%  "
+  x
+    |> (*) 100
+    >> viewNumTrunc
+    >> (\x -> x ++ "%" )
 
 
-viewCheckSum : Model a -> Html Msg
+viewHighlight : String -> Html Msg
+viewHighlight =
+  (\x -> Html.span [Attr.class "highlight"] [Html.text x])
+
+
+viewNumTrunc : Float -> String
+viewNumTrunc =
+  toString >> String.left 4
+
+
+viewCheckSum : Dice.Pool a -> Html Msg
 viewCheckSum model =
   let
     fsum xs = List.map snd xs |> List.sum

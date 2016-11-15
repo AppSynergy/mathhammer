@@ -12,6 +12,7 @@ type alias Pool hasStats =
   , results : List Chance
   , chartId : String
   , name : String
+  , plural : String
   }
 
 
