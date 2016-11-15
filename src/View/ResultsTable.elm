@@ -44,8 +44,10 @@ view model =
         ]
       ]
     , Html.div [Attr.class "col col-xs-6"]
-      -- TODO Html.canvas [Attr.id model.chartId] []
-      [ Html.div [] [Html.text expect_str]
+      [ Html.div []
+        [ Html.canvas [Attr.id model.chartId] []
+        ]
+      , Html.div [] [Html.text expect_str]
       ]
     ]
 
