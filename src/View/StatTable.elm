@@ -19,19 +19,24 @@ type alias Model =
   , defender_n : Stat
   , defender_t : Stat
   , defender_sv : Stat
+  , iterable : Iterable
   }
 
 
+type Iterable =
+  Iterable (List (String, Model -> Stat))
+
+
 fetch : Model -> (Int, Int, Int, Int, Int, Int, Int)
-fetch stats =
+fetch model =
   let
-    n = stats.attacker_n.value
-    bs = stats.attacker_bs.value
-    s = stats.attacker_s.value
-    ap = stats.attacker_ap.value
-    n2 = stats.defender_n.value
-    t = stats.defender_t.value
-    sv = stats.defender_sv.value
+    n = model.attacker_n.value
+    bs = model.attacker_bs.value
+    s = model.attacker_s.value
+    ap = model.attacker_ap.value
+    n2 = model.defender_n.value
+    t = model.defender_t.value
+    sv = model.defender_sv.value
   in
   (n, bs, s, ap, n2, t, sv)
 
@@ -63,9 +68,18 @@ init =
     , range = [1..10]
     }
   , defender_sv =
-    { value = 5
+    { value = 4
     , range = [1..6]
     }
+  , iterable = Iterable
+    [ ("attacker_n", .attacker_n)
+    , ("attacker_bs", .attacker_bs)
+    , ("attacker_s", .attacker_s)
+    , ("attacker_ap", .attacker_ap)
+    , ("defender_n", .defender_n)
+    , ("defender_t", .defender_t)
+    , ("defender_sv", .defender_sv)
+    ]
   }
 
 
