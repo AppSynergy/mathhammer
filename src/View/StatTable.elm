@@ -67,7 +67,9 @@ update stat value model =
     "attacker_bs" -> { model | attacker_bs = intVal model.attacker_bs }
     "attacker_s" -> { model | attacker_s = intVal model.attacker_s }
     "attacker_ap" -> { model | attacker_ap = intVal model.attacker_ap }
+    "defender_n" -> { model | defender_n = intVal model.defender_n }
     "defender_t" -> { model | defender_t = intVal model.defender_t }
+    "defender_sv" -> { model | defender_sv = intVal model.defender_sv }
     _ -> model
 
 

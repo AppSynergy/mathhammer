@@ -68,8 +68,7 @@ update msg model =
 
     Boot ->
       let
-        stats = model.statTable
-        (hits, wounds, saves) = calculatePools model stats
+        (hits, wounds, saves) = calculatePools model
       in
       { model
       | hitPool = hits
@@ -79,12 +78,11 @@ update msg model =
 
     UpdateStat stat value ->
       let
-        stats = StatTable.update stat value model.statTable
-        (hits, wounds, saves) = calculatePools model stats
+        model' = { model | statTable = StatTable.update stat value model.statTable }
+        (hits, wounds, saves) = calculatePools model'
       in
-      { model
-      | statTable = stats
-      , hitPool = hits
+      { model'
+      | hitPool = hits
       , woundPool = wounds
       , savePool = saves
       } |> update UpdateCharts
@@ -106,9 +104,10 @@ update msg model =
       (model, Cmd.none)
 
 
-calculatePools : Model -> StatTable.Model -> (HitPool.Model, WoundPool.Model, SavePool.Model)
-calculatePools model stats =
+calculatePools : Model -> (HitPool.Model, WoundPool.Model, SavePool.Model)
+calculatePools model =
   let
+    stats = model.statTable
     hits =  HitPool.update stats model.hitPool
     wounds = WoundPool.update stats hits.results model.woundPool
     saves = SavePool.update stats wounds.results model.savePool

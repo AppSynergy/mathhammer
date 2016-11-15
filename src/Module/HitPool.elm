@@ -8,12 +8,9 @@ import Model exposing (Msg,Chance,Stat)
 
 -- MODEL
 
-type alias Model =
+type alias Model = Dice.Pool
   { n: Int
   , bs : Int
-  , results : List Chance
-  , chartId : String
-  , name : String
   }
 
 
@@ -28,6 +25,7 @@ init : Int -> Int -> Model
 init n bs =
   { n = n
   , bs = bs
+  , input = []
   , results = []
   , chartId = "toHitChart"
   , name = "Hits"

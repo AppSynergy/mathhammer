@@ -11,7 +11,7 @@ type Msg
   | UpdateCharts
   | UpdateStat String String
 
-type alias Chance = 
+type alias Chance =
   (Int, Float)
 
 type alias AccumChance =

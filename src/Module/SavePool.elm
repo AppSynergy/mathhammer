@@ -1,7 +1,6 @@
 module Module.SavePool exposing (Model,init,update)
 
 import Dict exposing (Dict)
-import List.Extra
 
 import Lib.Dice as Dice
 import Model exposing (Msg,Chance,Stat)
@@ -9,13 +8,9 @@ import Model exposing (Msg,Chance,Stat)
 
 -- MODEL
 
-type alias Model =
+type alias Model = Dice.Pool
   { ap : Int
   , sv : Int
-  , input : List Chance
-  , results : List Chance
-  , chartId : String
-  , name : String
   }
 
 
@@ -24,7 +19,6 @@ type alias HasApSv a =
   | attacker_ap : Stat
   , defender_sv : Stat
   }
-
 
 
 init : Int -> Int -> List Chance -> Model
@@ -42,16 +36,22 @@ init ap sv input =
 
 update : HasApSv a -> List Chance -> Model -> Model
 update stats results model =
-  let model' =
-    { model
-    | ap = stats.attacker_ap.value
-    , sv = stats.defender_sv.value
-    , input = results
-    }
+  let
+    debug = Debug.log "update" model'
+    model' =
+      { model
+      | ap = stats.attacker_ap.value
+      , sv = stats.defender_sv.value
+      , input = results
+      }
   in
   { model' | results = updateChances model' }
 
 
 updateChances : Model -> List Chance
 updateChances model =
-  List.map (\(x,y) -> (x, y*0.5)) model.input
+  if model.ap <= model.sv
+    then model.input
+    else case Dict.get model.sv Dice.toFailSaveChance of
+      Just x -> Dice.expand x model.input
+      Nothing -> model.input
