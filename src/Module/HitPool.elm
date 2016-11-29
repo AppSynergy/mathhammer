@@ -1,26 +1,17 @@
-module Module.HitPool exposing (Model,init,update)
+module Module.HitPool exposing (init,update)
 
 import Dict exposing (Dict)
-
 import Lib.Dice as Dice
-import Model exposing (Msg,Chance,Stat)
+import Model exposing (Chance)
+import Module.Pool exposing (Model)
 
 
 -- MODEL
 
-type alias Model = Dice.Pool
-  { n: Int
-  , bs : Int
-  }
-
-
-init : (Int, Int) -> Model
-init (n, bs) =
-  { n = n
-  , bs = bs
-  , input = []
-  , results = []
-  , chartId = "toHitChart"
+init : Model -> Model
+init model =
+  { model
+  | chartId = "toHitChart"
   , name = "Hits"
   , plural = "hits"
   }
@@ -28,16 +19,8 @@ init (n, bs) =
 
 -- UPDATE
 
-update : (Int, Int) -> Model -> Model
-update (n, bs) model =
-  let
-    model' = { model | n = n , bs = bs }
-  in
-  { model' | results = updateChances model' }
-
-
-updateChances : Model -> List Chance
-updateChances model =
-  case Dict.get model.bs Dice.toHitChance of
-    Just x -> Dice.binomial model.n x (1 - x)
+update : Model -> List Chance
+update model =
+  case Dict.get model.att Dice.toHitChance of
+    Just x -> Dice.binomial model.def x (1 - x) -- jamming n as .def
     Nothing -> model.results

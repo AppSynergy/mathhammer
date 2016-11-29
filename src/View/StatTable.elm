@@ -19,6 +19,7 @@ type alias Model =
   , defender_n : Stat
   , defender_t : Stat
   , defender_sv : Stat
+  , defender_fnp : Stat
   , iterable : Iterable
   }
 
@@ -27,7 +28,7 @@ type Iterable =
   Iterable (List (String, Model -> Stat))
 
 
-fetch : Model -> (Int, Int, Int, Int, Int, Int, Int)
+fetch : Model -> (Int, Int, Int, Int, Int, Int, Int, Int)
 fetch model =
   let
     n = model.attacker_n.value
@@ -37,8 +38,9 @@ fetch model =
     n2 = model.defender_n.value
     t = model.defender_t.value
     sv = model.defender_sv.value
+    fnp = model.defender_fnp.value
   in
-  (n, bs, s, ap, n2, t, sv)
+  (n, bs, s, ap, n2, t, sv, fnp)
 
 
 init : Model
@@ -71,6 +73,10 @@ init =
     { value = 4
     , range = [1..6]
     }
+  , defender_fnp =
+    { value = 5
+    , range = [1..6]
+    }
   , iterable = Iterable
     [ ("attacker_n", .attacker_n)
     , ("attacker_bs", .attacker_bs)
@@ -79,6 +85,7 @@ init =
     , ("defender_n", .defender_n)
     , ("defender_t", .defender_t)
     , ("defender_sv", .defender_sv)
+    , ("defender_fnp", .defender_fnp)
     ]
   }
 
@@ -95,6 +102,7 @@ update stat v model =
     "defender_n" -> { model | defender_n = intVal v model.defender_n }
     "defender_t" -> { model | defender_t = intVal v model.defender_t }
     "defender_sv" -> { model | defender_sv = intVal v model.defender_sv }
+    "defender_fnp" -> { model | defender_fnp = intVal v model.defender_fnp }
     _ -> model
 
 
@@ -112,6 +120,7 @@ viewDefenderHeaders =
   [ Html.text "Number"
   , Html.text "T"
   , Html.text "Save"
+  , Html.text "Feel No Pain"
   ]
 
 
@@ -129,6 +138,7 @@ viewDefenderInput model =
   [ viewSelect "defender_n" model.defender_n.range model.defender_n.value
   , viewSelect "defender_t" model.defender_t.range model.defender_t.value
   , viewSelect "defender_sv" model.defender_sv.range model.defender_sv.value
+  , viewSelect "defender_fnp" model.defender_fnp.range model.defender_fnp.value
   ]
 
 

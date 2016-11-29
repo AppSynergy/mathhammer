@@ -9,7 +9,9 @@ import Lib.Chart as Chart
 import Model exposing (..)
 import Module.HitPool as HitPool
 import Module.WoundPool as WoundPool
-import Module.SavePool as SavePool
+import Module.ArmorSavePool as APool
+import Module.FeelNoPainSavePool as FNPool
+import Module.Pool as Pool
 import View.StatTable as StatTable
 import View.ResultsTable as ResultsTable
 
@@ -34,9 +36,10 @@ port drawChart : (String, Json.Value, Json.Value) -> Cmd msg
 
 type alias Model =
   { statTable : StatTable.Model
-  , hitPool : HitPool.Model
-  , woundPool : WoundPool.Model
-  , savePool : SavePool.Model
+  , hitPool : Pool.Model
+  , woundPool : Pool.Model
+  , aPool : Pool.Model
+  , fnpPool : Pool.Model
   }
 
 
@@ -66,9 +69,10 @@ update msg model =
         sendData pool = update (Chart.sendData pool) model
         (_, graph1) = sendData model.hitPool
         (_, graph2) = sendData model.woundPool
-        (_, graph3) = sendData model.savePool
+        (_, graph3) = sendData model.aPool
+        (_, graph4) = sendData model.fnpPool
       in
-      (model, Cmd.batch [graph1, graph2, graph3])
+      (model, Cmd.batch [graph1, graph2, graph3, graph4])
 
     DrawChart id data ->
       (model, drawChart (id, data, Chart.options))
@@ -86,12 +90,14 @@ view model =
     , Html.div [Attr.class "nice-results row"]
       [ ResultsTable.view model.hitPool
       , ResultsTable.view model.woundPool
-      , ResultsTable.view model.savePool
+      , ResultsTable.view model.aPool
+      , ResultsTable.view model.fnpPool
       ]
     , Html.div [Attr.class "table-results"]
       [ ResultsTable.viewTable model.hitPool
       , ResultsTable.viewTable model.woundPool
-      , ResultsTable.viewTable model.savePool
+      , ResultsTable.viewTable model.aPool
+      , ResultsTable.viewTable model.fnpPool
       ]
     ]
 
@@ -102,28 +108,32 @@ initPools : Model
 initPools =
   let
     stats = StatTable.init
-    (n, bs, s, ap, _, t, sv) = StatTable.fetch stats
-    hits = HitPool.init (n, bs)
-    wounds = WoundPool.init (s, t) hits.results
-    saves = SavePool.init (ap, sv) wounds.results
+    (n, bs, s, ap, _, t, sv, fnp) = StatTable.fetch stats
+    hits = Pool.init (bs, n) []
+    wounds = Pool.init (s, t) hits.results
+    aSaves = Pool.init (ap, sv) wounds.results
+    fnpSaves = Pool.init (0, fnp) aSaves.results
   in
     { statTable = stats
-    , hitPool = hits
-    , woundPool = wounds
-    , savePool = saves
+    , hitPool = HitPool.init hits
+    , woundPool = WoundPool.init wounds
+    , aPool = APool.init aSaves
+    , fnpPool = FNPool.init fnpSaves
     }
 
 
 updatePools : Model -> Model
 updatePools model =
   let
-    (n, bs, s, ap, _, t, sv) = StatTable.fetch model.statTable
-    hits =  HitPool.update (n, bs) model.hitPool
-    wounds = WoundPool.update (s, t) hits.results model.woundPool
-    saves = SavePool.update (ap,sv) wounds.results model.savePool
+    (n, bs, s, ap, _, t, sv, fnp) = StatTable.fetch model.statTable
+    hits =  Pool.update HitPool.update (bs, n) [] model.hitPool
+    wounds = Pool.update WoundPool.update (s, t) hits.results model.woundPool
+    aSaves = Pool.update APool.update (ap,sv) wounds.results model.aPool
+    fnpSaves = Pool.update FNPool.update (0, fnp) aSaves.results model.fnpPool
   in
     { model
     | hitPool = hits
     , woundPool = wounds
-    , savePool = saves
+    , aPool = aSaves
+    , fnpPool = fnpSaves
     }

@@ -1,26 +1,17 @@
-module Module.WoundPool exposing (Model,init,update)
+module Module.WoundPool exposing (init, update)
 
 import Dict exposing (Dict)
-
 import Lib.Dice as Dice
-import Model exposing (Msg,Chance,Stat)
+import Model exposing (Chance)
+import Module.Pool exposing (Model)
 
 
 -- MODEL
 
-type alias Model = Dice.Pool
-  { s : Int
-  , t : Int
-  }
-
-
-init : (Int, Int) -> List Chance -> Model
-init (s, t) input =
-  { s = s
-  , t = t
-  , input = input
-  , results = []
-  , chartId = "toWoundChart"
+init : Model -> Model
+init model =
+  { model
+  | chartId = "toWoundChart"
   , name = "Wounds"
   , plural = "wounds"
   }
@@ -28,18 +19,10 @@ init (s, t) input =
 
 -- UPDATE
 
-update : (Int, Int) -> List Chance -> Model -> Model
-update (s, t) results model =
+update : Model -> List Chance
+update model =
   let
-    model' = { model | s = s , t = t , input = results }
-  in
-  { model' | results = updateChances model' }
-
-
-updateChances : Model -> List Chance
-updateChances model =
-  let
-    statDiff = model.s - model.t
+    statDiff = model.att - model.def
   in
   case Dict.get statDiff Dice.toWoundChance of
     Just x -> Dice.expand x model.input
