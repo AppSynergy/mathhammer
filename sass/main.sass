@@ -1,22 +1,76 @@
+$bgColor: #111
+$cellColor: #222
+$statColor: #094
+$fontColor: #eee
+$highLightColor: #094
+$highLightContrast: #CA6C00
 
-.results-row, .input-row
-  margin: 10px 0
-  background-color: #ddd
-  h2
-    text-transform: uppercase
-    font-size: 20px
-    font-weight: 700
+=titleFont
+  font-family: 'Coda', cursive
 
-.stat-table
-  &.table>tbody>tr
-    th, td
-      padding: 0 5px
-      font-size: 150%
-
-.highlight
-  font-size: 180%
+=highlightStyle
+  background-color: $bgColor
+  border: 1px solid $statColor
+  display: inline-block
   font-weight: 700
-  color: rgba(73,133,51,0.6)
 
-.canvas-holder
-  padding: 10px
+html body
+  line-height: 1.6em
+  background-color: $bgColor
+
+  & *
+    font-family: 'Open Sans', sans-serif
+    color: $fontColor
+
+  h1.main-title
+    +titleFont
+
+  .results-row, .input-row
+    margin: 10px 0
+    background-color: $cellColor
+    h2
+      text-transform: uppercase
+      font-size: 20px
+      font-weight: 700
+      +titleFont
+
+  .stat-table
+    &.table>tbody>tr
+      th, td
+        padding: 0 6px
+        text-align: center
+        background-color: $statColor
+        border: none
+        border-right: 4px solid $cellColor
+        &:last-child
+          border-right: none
+      th
+        height: 3em
+        padding-top: 2px
+        font-size: 85%
+        text-transform: uppercase
+        color: $cellColor
+      td
+        font-size: 150%
+        padding-bottom: 5px
+
+  select
+    width: 100%
+    +highlightStyle
+    +titleFont
+
+  .highlight
+    font-size: 180%
+    padding: 6px 4px 4px
+    color: $highLightColor
+    +highlightStyle
+    +titleFont
+
+  .chartjs-hidden-iframe
+    height: 100%
+
+  .canvas-holder
+    padding: 10px
+
+  .table-results
+    display: none

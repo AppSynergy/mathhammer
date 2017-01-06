@@ -29,7 +29,7 @@ main = Html.App.program
 
 -- INTEROP
 
-port drawChart : (String, Json.Value, Json.Value) -> Cmd msg
+port drawChart : (String, String, Json.Value) -> Cmd msg
 
 
 -- MODEL
@@ -74,8 +74,8 @@ update msg model =
       in
       (model, Cmd.batch [graph1, graph2, graph3, graph4])
 
-    DrawChart id data ->
-      (model, drawChart (id, data, Chart.options))
+    DrawChart id data name ->
+      (model, drawChart (id, data, name))
 
     _ ->
       (model, Cmd.none)

@@ -13,7 +13,7 @@ import Model exposing (Msg,Chance,AccumChance)
 
 view : Dice.Pool a -> Html Msg
 view model =
-  Html.div [Attr.class "col col-xs-12 col-md-6 col-lg-4"]
+  Html.div [Attr.class "col col-xs-12 col-md-6"]
     [ Html.div [Attr.class "results-row row"]
       [ Html.div [Attr.class "col col-xs-6 table-col"]
         [ Html.h2 [] [Html.text model.name]
@@ -62,12 +62,12 @@ viewChance (val, prob, accumProb) =
 viewExpectation : Dice.Pool a -> Html Msg
 viewExpectation model =
   let
-    (str, str') = ("Expecting " , " " ++ model.plural ++ ".")
+    str = " " ++ model.plural ++ " expected."
   in
   Math.expectation model.results
     |> viewNumTrunc
     >> viewHighlight
-    >> (\x -> Html.p [] [Html.text str, x, Html.text str'])
+    >> (\x -> Html.p [] [x, Html.text str])
 
 
 viewNonZeroEffect : Dice.Pool a -> Html Msg

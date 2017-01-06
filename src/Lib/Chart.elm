@@ -7,24 +7,28 @@ import Model exposing (..)
 
 
 type alias HasChart a =
-  { a | chartId : String, results : List Chance }
+  { a | chartId : String, name : String, results : List Chance }
 
 
 sendData : HasChart a -> Msg
 sendData pool =
   Math.accumulate pool.results
     |> convert
-    |> DrawChart pool.chartId
+    |> DrawChart pool.chartId pool.name
 
 
 options : Json.Value
 options =
+  let obj = Json.object in
   Json.object
-    [ ("legend", Json.object
+    [ ("legend", obj
       [ ("display", Json.bool False)
       ] )
-    , ("tooltips", Json.object
-      [ ("enabled", Json.bool False)
+    , ("tooltips", obj
+      [ ("enabled", Json.bool True)
+      , ("callbacks", obj [
+
+        ] )
       ] )
     ]
 
@@ -39,12 +43,12 @@ convert xs =
       [ Json.object
         [ ("label", Json.string "Probability")
         , ("data", Json.list data)
-        , ("backgroundColor", Json.string "rgba(153,255,51,0.4)")
+        , ("backgroundColor", Json.string "#009040")
         ]
       , Json.object
         [ ("label", Json.string "Accumulated Probability")
         , ("data", Json.list dataAccum)
-        , ("backgroundColor", Json.string "rgba(73,133,51,0.4)")
+        , ("backgroundColor", Json.string "#CA6C00")
         ]
       ]
   in

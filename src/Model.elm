@@ -7,7 +7,7 @@ import Json.Encode as Json
 type Msg
   = NoOp
   | Boot
-  | DrawChart String Json.Value
+  | DrawChart String String Json.Value
   | UpdateCharts
   | UpdateStat String String
 

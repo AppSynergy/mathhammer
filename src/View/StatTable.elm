@@ -108,18 +108,18 @@ update stat v model =
 
 viewAttackerHeaders : List (Html Msg)
 viewAttackerHeaders =
-  [ Html.text "Number"
-  , Html.text "BS"
-  , Html.text "S"
-  , Html.text "AP"
+  [ Html.text "Number of Shots"
+  , Html.text "Ballistic Skill"
+  , Html.text "Strength"
+  , Html.text "Armor Penetration"
   ]
 
 
 viewDefenderHeaders : List (Html Msg)
 viewDefenderHeaders =
-  [ Html.text "Number"
-  , Html.text "T"
-  , Html.text "Save"
+  --[ Html.text "Number"
+  [ Html.text "Toughness"
+  , Html.text "Armor Save"
   , Html.text "Feel No Pain"
   ]
 
@@ -135,8 +135,8 @@ viewAttackerInput model =
 
 viewDefenderInput : Model -> List (Html Msg)
 viewDefenderInput model =
-  [ viewSelect "defender_n" model.defender_n.range model.defender_n.value
-  , viewSelect "defender_t" model.defender_t.range model.defender_t.value
+  --[ viewSelect "defender_n" model.defender_n.range model.defender_n.value
+  [ viewSelect "defender_t" model.defender_t.range model.defender_t.value
   , viewSelect "defender_sv" model.defender_sv.range model.defender_sv.value
   , viewSelect "defender_fnp" model.defender_fnp.range model.defender_fnp.value
   ]
@@ -160,7 +160,7 @@ view model =
       Html.tr [] <| List.map (\x -> ele [] [x]) vals
   in
   Html.div [Attr.class "input-row row"]
-    [ Html.div [Attr.class "col col-xs-6"]
+    [ Html.div [Attr.class "col col-xs-12 col-sm-6"]
       [ Html.h2 [] [Html.text "Attacker"]
       , Html.table [Attr.class "table stat-table"]
         [ Html.tbody []
@@ -169,7 +169,7 @@ view model =
           ]
         ]
       ]
-    , Html.div [Attr.class "col col-xs-6"]
+    , Html.div [Attr.class "col col-xs12 col-sm-6"]
       [ Html.h2 [] [Html.text "Defender"]
       , Html.table [Attr.class "table stat-table"]
         [ Html.tbody []
