@@ -4,12 +4,21 @@
   "description": "Mathhammer",
   "main": "index.js",
   "scripts": {
-    "ssce": "onchange src/Stub.elm -- elm make src/Stub.elm --output stub.html",
-    "watch": "npm run w:elm & npm run w:sass",
-    "w:elm": "onchange 'src/**' -- npm run build:elm",
-    "w:sass": "onchange 'sass/**' -- npm run build:sass",
-    "build:elm": "elm make src/Main.elm --output dist/js/main.js",
-    "build:sass": "node-sass --output-style compressed -o dist/css sass"
+    "build": "npm run clean && npm run compile && npm run bower && npm run minify",
+    "clean": "rm -rf dist && rm -rf .tmp && npm run clean:setup",
+    "clean:setup": "mkdir dist && mkdir dist/css && mkdir dist/js",
+    "watch": "npm run watch:elm & npm run watch:sass",
+    "watch:elm": "onchange 'src/elm/**' -- npm run compile:elm",
+    "watch:sass": "onchange 'src/sass/**' -- npm run compile:sass",
+    "compile": "npm run compile:elm && npm run compile:sass && cp -r src/js/* .tmp",
+    "compile:elm": "elm make src/elm/Main.elm --output .tmp/app.js",
+    "compile:sass": "node-sass --output-style compressed -o .tmp src/sass",
+    "bower": "npm run bower:js && npm run bower:css",
+    "bower:js": "cp bower_components/chart.js/dist/Chart.min.js .tmp",
+    "bower:css": "cp bower_components/bootstrap/dist/css/bootstrap.min.css .tmp",
+    "minify": "npm run minify:js && npm run minify:css",
+    "minify:js": "uglifyjs .tmp/*.js --compress > dist/js/main.min.js",
+    "minify:css": "uglifycss .tmp/*.css > dist/css/main.min.css"
   },
   "author": "Adam Marshall <adam@appsynergy.net>",
   "license": "ISC",
@@ -18,6 +27,7 @@
   },
   "devDependencies": {
     "node-sass": "^3.11.3",
-    "onchange": "^3.0.2"
+    "onchange": "^3.0.2",
+    "uglify-js": "^2.7.5"
   }
 }
